@@ -1,13 +1,48 @@
-// ===== LOADING SCREEN =====
-window.addEventListener('load', () => {
-    const loader = document.getElementById('loader');
+// ===== LOADING & INIT =====
+let currentTheme = 'dark';
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    setTheme(savedTheme);
+    
+    // Initialize Three.js
+    initThreeJS();
+    
+    // Initialize animations
+    initAnimations();
+    
+    console.log('🚀 Portfolio loaded!');
+});
+
+// ===== THEME TOGGLE =====
+const themeToggle = document.getElementById('theme-toggle');
+themeToggle.addEventListener('click', () => {
+    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    setTheme(currentTheme);
+    localStorage.setItem('theme', currentTheme);
+});
+
+function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeToggle.innerHTML = theme === 'dark' 
+        ? '<i class="fas fa-moon"></i>' 
+        : '<i class="fas fa-sun"></i>';
+    currentTheme = theme;
+}
+
+// ===== CUSTOM CURSOR =====
+const cursor = document.querySelector('.cursor');
+const cursorFollower = document.querySelector('.cursor-follower');
+
+document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    
     setTimeout(() => {
-        loader.style.opacity = '0';
-        setTimeout(() => {
-            loader.style.display = 'none';
-            initThreeJS();
-        }, 600);
-    }, 1500);
+        cursorFollower.style.left = e.clientX + 'px';
+        cursorFollower.style.top = e.clientY + 'px';
+    }, 100);
 });
 
 // ===== NAVIGATION SCROLL EFFECT =====
@@ -28,13 +63,7 @@ navToggle.addEventListener('click', () => {
     navMenu.classList.toggle('active');
 });
 
-navMenu.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-        navMenu.classList.remove('active');
-    });
-});
-
-// ===== THREE.JS PREMIUM SCENE =====
+// ===== THREE.JS 3D SCENE =====
 function initThreeJS() {
     const container = document.getElementById('canvas-container');
     if (!container) return;
@@ -47,8 +76,8 @@ function initThreeJS() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    // Create torus knot
-    const geometry = new THREE.TorusKnotGeometry(1.5, 0.5, 128, 32);
+    // Create icosahedron
+    const geometry = new THREE.IcosahedronGeometry(2, 1);
     const material = new THREE.MeshPhongMaterial({ 
         color: 0x6366f1,
         wireframe: true,
@@ -56,19 +85,27 @@ function initThreeJS() {
         opacity: 0.6,
         shininess: 100
     });
-    const torusKnot = new THREE.Mesh(geometry, material);
-    scene.add(torusKnot);
+    const icosahedron = new THREE.Mesh(geometry, material);
+    scene.add(icosahedron);
 
-    // Create inner glow sphere
-    const sphereGeo = new THREE.SphereGeometry(2, 64, 64);
-    const sphereMat = new THREE.MeshBasicMaterial({ 
-        color: 0x8b5cf6,
-        wireframe: true,
+    // Create particle sphere
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 300;
+    const posArray = new Float32Array(particlesCount * 3);
+
+    for(let i = 0; i < particlesCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 8;
+    }
+
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.04,
+        color: 0xfbbf24,
         transparent: true,
-        opacity: 0.15
+        opacity: 0.8
     });
-    const sphere = new THREE.Mesh(sphereGeo, sphereMat);
-    scene.add(sphere);
+    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particles);
 
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -82,60 +119,31 @@ function initThreeJS() {
     pointLight2.position.set(-5, -5, 5);
     scene.add(pointLight2);
 
-    camera.position.z = 4;
+    camera.position.z = 5;
 
     // Mouse interaction
     let mouseX = 0;
     let mouseY = 0;
-    let targetX = 0;
-    let targetY = 0;
-
-    const windowHalfX = window.innerWidth / 2;
-    const windowHalfY = window.innerHeight / 2;
 
     document.addEventListener('mousemove', (event) => {
-        mouseX = (event.clientX - windowHalfX);
-        mouseY = (event.clientY - windowHalfY);
+        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
     });
-
-    // Particles
-    const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 200;
-    const posArray = new Float32Array(particlesCount * 3);
-
-    for(let i = 0; i < particlesCount * 3; i++) {
-        posArray[i] = (Math.random() - 0.5) * 10;
-    }
-
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-    const particlesMaterial = new THREE.PointsMaterial({
-        size: 0.03,
-        color: 0xfbbf24,
-        transparent: true,
-        opacity: 0.8
-    });
-    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-    scene.add(particles);
 
     // Animation
     function animate() {
         requestAnimationFrame(animate);
 
-        targetX = mouseX * 0.001;
-        targetY = mouseY * 0.001;
-
-        torusKnot.rotation.x += 0.003;
-        torusKnot.rotation.y += 0.005;
-        torusKnot.rotation.z += 0.002;
-
-        sphere.rotation.x -= 0.002;
-        sphere.rotation.y -= 0.003;
+        icosahedron.rotation.x += 0.003;
+        icosahedron.rotation.y += 0.005;
+        icosahedron.rotation.z += 0.002;
 
         particles.rotation.y += 0.001;
+        particles.rotation.x += 0.0005;
 
-        // Smooth mouse follow
-        torusKnot.rotation.x += 0.05 * (targetY - torusKnot.rotation.x);
-        torusKnot.rotation.y += 0.05 * (targetX - torusKnot.rotation.y);
+        // Mouse interaction
+        icosahedron.rotation.x += mouseY * 0.01;
+        icosahedron.rotation.y += mouseX * 0.01;
 
         renderer.render(scene, camera);
     }
@@ -149,6 +157,20 @@ function initThreeJS() {
         camera.updateProjectionMatrix();
     });
 }
+
+// ===== SMOOTH SCROLL =====
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
 
 // ===== STATS COUNTER ANIMATION =====
 const statNumbers = document.querySelectorAll('.stat-number');
@@ -215,24 +237,18 @@ contactForm.addEventListener('submit', async (e) => {
     }, 5000);
 });
 
-// ===== SMOOTH SCROLL =====
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    });
+// ===== VANILLA TILT FOR CARDS =====
+VanillaTilt.init(document.querySelectorAll('[data-tilt]'), {
+    max: 15,
+    speed: 400,
+    glare: true,
+    'max-glare': 0.2
 });
 
 // ===== INTERSECTION OBSERVER FOR ANIMATIONS =====
 const observerOptions = {
     threshold: 0.1,
-    rootMargin: '0px 0px -100px 0px'
+    rootMargin: '0px 0px -50px 0px'
 };
 
 const observer = new IntersectionObserver((entries) => {
@@ -244,12 +260,25 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
-document.querySelectorAll('.work-card, .expertise-item, .about-content').forEach(el => {
+document.querySelectorAll('.work-card, .skill-category, .timeline-item').forEach(el => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(30px)';
     el.style.transition = 'all 0.6s ease-out';
     observer.observe(el);
 });
 
-console.log('Portfolio loaded! 🚀');
-console.log('Premium design by Darsh');
+// ===== GLITCH EFFECT =====
+const glitchElement = document.querySelector('.glitch');
+if (glitchElement) {
+    setInterval(() => {
+        glitchElement.style.transform = `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
+        setTimeout(() => {
+            glitchElement.style.transform = 'translate(0, 0)';
+        }, 100);
+    }, 3000);
+}
+
+function initAnimations() {
+    // Any additional initialization
+    console.log('Animations initialized');
+}
