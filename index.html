@@ -3,432 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Darsh | Full-Stack Developer - 3D Portfolio</title>
+    <title>Darsh | Creative Developer & Digital Designer</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Loading Screen -->
     <div id="loader">
-        <div class="cube-loader">
-            <div class="cube-face front"></div>
-            <div class="cube-face back"></div>
-            <div class="cube-face left"></div>
-            <div class="cube-face right"></div>
-            <div class="cube-face top"></div>
-            <div class="cube-face bottom"></div>
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <h2 class="loader-text">DARSH</h2>
+            <p class="loader-subtitle">Creative Developer</p>
         </div>
-        <p class="loading-text">Loading Portfolio...</p>
     </div>
 
-    <!-- Custom Cursor -->
-    <div class="cursor"></div>
-    <div class="cursor-follower"></div>
-
-    <!-- Particle Background -->
-    <canvas id="particles-canvas"></canvas>
-
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="logo">
-            <span class="logo-text">&lt;Darsh/&gt;</span>
-        </div>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#experience">Experience</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-        <div class="burger">
-            <div class="line1"></div>
-            <div class="line2"></div>
-            <div class="line3"></div>
+    <nav class="nav" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <span class="logo-text">Darsh.</span>
+            </a>
+            <div class="nav-menu" id="nav-menu">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#work" class="nav-link">Work</a>
+                <a href="#expertise" class="nav-link">Expertise</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            <button class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="hero">
+    <section class="hero" id="hero">
+        <div class="hero-bg">
+            <div class="gradient-orb gradient-orb-1"></div>
+            <div class="gradient-orb gradient-orb-2"></div>
+            <div class="gradient-orb gradient-orb-3"></div>
+        </div>
         <div class="hero-content">
-            <h1 class="hero-title">
-                <span class="greeting">Hello, I'm</span>
-                <span class="name glitch" data-text="Darsh">Darsh</span>
-                <span class="title-text">Full-Stack Developer</span>
-            </h1>
-            <div class="typing-container">
-                <span class="typing-text"></span>
-                <span class="cursor-blink">|</span>
+            <div class="hero-text">
+                <p class="hero-greeting">Hello, I'm</p>
+                <h1 class="hero-title">Darsh</h1>
+                <p class="hero-subtitle">Creative Developer & Digital Designer</p>
+                <p class="hero-description">
+                    I craft beautiful, interactive digital experiences that blend art with technology. 
+                    Specializing in full-stack development with a focus on creative solutions.
+                </p>
+                <div class="hero-actions">
+                    <a href="#work" class="btn btn-primary">View My Work</a>
+                    <a href="#contact" class="btn btn-secondary">Get in Touch</a>
+                </div>
             </div>
-            <div class="hero-buttons">
-                <a href="#projects" class="btn btn-primary">View My Work</a>
-                <a href="#contact" class="btn btn-secondary">Contact Me</a>
-            </div>
-            <div class="social-links">
-                <a href="https://github.com/todarsh002" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="https://linkedin.com/in/todarsh002" target="_blank"><i class="fab fa-linkedin"></i></a>
-                <a href="https://twitter.com/todarsh002" target="_blank"><i class="fab fa-twitter"></i></a>
+            <div class="hero-visual">
+                <div id="canvas-container"></div>
             </div>
         </div>
-        <div class="hero-3d">
-            <div id="three-container"></div>
+        <div class="scroll-indicator">
+            <div class="mouse"></div>
+            <p>Scroll to explore</p>
         </div>
     </section>
 
     <!-- About Section -->
-    <section id="about" class="about-section">
-        <h2 class="section-title">About Me</h2>
-        <div class="about-content">
-            <div class="about-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <div class="profile-img-container">
-                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Darsh&backgroundColor=1a1a2e" alt="Darsh" class="profile-img">
+    <section class="section about" id="about">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">About Me</h2>
+                <p class="section-subtitle">The person behind the code</p>
+            </div>
+            <div class="about-content">
+                <div class="about-image">
+                    <div class="image-wrapper">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Darsh&backgroundColor=1a1a2e" alt="Darsh" class="profile-img">
+                    </div>
+                </div>
+                <div class="about-text">
+                    <p class="about-lead">
+                        I'm a passionate developer who believes in creating digital experiences that matter.
+                    </p>
+                    <p>
+                        With expertise spanning both creative design and technical implementation, I bridge the gap 
+                        between aesthetics and functionality. My approach combines clean code with beautiful design 
+                        to deliver solutions that not only work flawlessly but also captivate users.
+                    </p>
+                    <p>
+                        When I'm not coding, you'll find me exploring new technologies, contributing to open-source 
+                        projects, or sharing knowledge with the developer community.
+                    </p>
+                    <div class="stats">
+                        <div class="stat">
+                            <span class="stat-number" data-target="50">0</span>
+                            <span class="stat-label">Projects</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" data-target="5">0</span>
+                            <span class="stat-label">Years</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" data-target="100">0</span>
+                            <span class="stat-label">Clients</span>
                         </div>
                     </div>
-                    <div class="card-back">
-                        <h3>Let's Connect!</h3>
-                        <p>Passionate about creating innovative solutions</p>
-                    </div>
-                </div>
-            </div>
-            <div class="about-text">
-                <p class="about-description">
-                    I'm a passionate <strong>Full-Stack Developer</strong> with expertise in building modern, 
-                    scalable web applications. I love transforming complex problems into elegant, user-friendly solutions.
-                </p>
-                <p class="about-description">
-                    With a strong foundation in both frontend and backend technologies, I create seamless 
-                    experiences that delight users and drive business growth. When I'm not coding, you'll 
-                    find me exploring new technologies, contributing to open-source, or sharing knowledge 
-                    with the developer community.
-                </p>
-                <div class="stats-container">
-                    <div class="stat-item">
-                        <span class="stat-number" data-target="50">0</span>
-                        <span class="stat-label">Projects Completed</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number" data-target="5">0</span>
-                        <span class="stat-label">Years Experience</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number" data-target="100">0</span>
-                        <span class="stat-label">Happy Clients</span>
-                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Skills Section -->
-    <section id="skills" class="skills-section">
-        <h2 class="section-title">Skills & Technologies</h2>
-        <div class="skills-carousel">
-            <div class="skill-category">
-                <h3><i class="fas fa-code"></i> Frontend</h3>
-                <div class="skill-items">
-                    <div class="skill-tag">React</div>
-                    <div class="skill-tag">Next.js</div>
-                    <div class="skill-tag">TypeScript</div>
-                    <div class="skill-tag">Vue.js</div>
-                    <div class="skill-tag">Three.js</div>
-                    <div class="skill-tag">Tailwind CSS</div>
-                </div>
+    <!-- Work Section -->
+    <section class="section work" id="work">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Featured Work</h2>
+                <p class="section-subtitle">Projects I'm proud of</p>
             </div>
-            <div class="skill-category">
-                <h3><i class="fas fa-server"></i> Backend</h3>
-                <div class="skill-items">
-                    <div class="skill-tag">Node.js</div>
-                    <div class="skill-tag">Python</div>
-                    <div class="skill-tag">Express</div>
-                    <div class="skill-tag">Django</div>
-                    <div class="skill-tag">FastAPI</div>
-                    <div class="skill-tag">GraphQL</div>
-                </div>
-            </div>
-            <div class="skill-category">
-                <h3><i class="fas fa-database"></i> Database</h3>
-                <div class="skill-items">
-                    <div class="skill-tag">MongoDB</div>
-                    <div class="skill-tag">PostgreSQL</div>
-                    <div class="skill-tag">MySQL</div>
-                    <div class="skill-tag">Redis</div>
-                    <div class="skill-tag">Firebase</div>
-                </div>
-            </div>
-            <div class="skill-category">
-                <h3><i class="fas fa-cloud"></i> DevOps & Cloud</h3>
-                <div class="skill-items">
-                    <div class="skill-tag">AWS</div>
-                    <div class="skill-tag">Docker</div>
-                    <div class="skill-tag">Kubernetes</div>
-                    <div class="skill-tag">CI/CD</div>
-                    <div class="skill-tag">GitHub Actions</div>
-                    <div class="skill-tag">Vercel</div>
-                </div>
+            <div class="work-grid">
+                <article class="work-card">
+                    <div class="work-image">
+                        <img src="https://images.unsplash.com/photo-1557821552-17105176677c?w=800" alt="E-Commerce Platform">
+                        <div class="work-overlay">
+                            <a href="#" class="work-link"><i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="work-info">
+                        <h3>E-Commerce Platform</h3>
+                        <p>A modern shopping experience with real-time inventory and seamless payments.</p>
+                        <div class="work-tags">
+                            <span>React</span>
+                            <span>Node.js</span>
+                            <span>MongoDB</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="work-card">
+                    <div class="work-image">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800" alt="AI Dashboard">
+                        <div class="work-overlay">
+                            <a href="#" class="work-link"><i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="work-info">
+                        <h3>AI Analytics Dashboard</h3>
+                        <p>Real-time data visualization with machine learning insights.</p>
+                        <div class="work-tags">
+                            <span>Python</span>
+                            <span>TensorFlow</span>
+                            <span>React</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="work-card">
+                    <div class="work-image">
+                        <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800" alt="Social Platform">
+                        <div class="work-overlay">
+                            <a href="#" class="work-link"><i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="work-info">
+                        <h3>Social Platform</h3>
+                        <p>Next-gen social networking with real-time features and engagement analytics.</p>
+                        <div class="work-tags">
+                            <span>Next.js</span>
+                            <span>Socket.io</span>
+                            <span>PostgreSQL</span>
+                        </div>
+                    </div>
+                </article>
             </div>
         </div>
     </section>
 
-    <!-- Projects Section -->
-    <section id="projects" class="projects-section">
-        <h2 class="section-title">Featured Projects</h2>
-        <div class="projects-grid">
-            <div class="project-card" data-tilt>
-                <div class="project-image">
-                    <img src="https://images.unsplash.com/photo-1557821552-17105176677c?w=800" alt="E-Commerce Platform">
-                    <div class="project-overlay">
-                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-                        <a href="#" class="project-github"><i class="fab fa-github"></i></a>
-                    </div>
-                </div>
-                <div class="project-info">
-                    <h3>E-Commerce Platform</h3>
-                    <p>Full-stack e-commerce solution with real-time inventory, payment gateway integration, and admin dashboard.</p>
-                    <div class="project-tech">
-                        <span>React</span>
-                        <span>Node.js</span>
-                        <span>MongoDB</span>
-                        <span>Stripe</span>
-                    </div>
-                </div>
+    <!-- Expertise Section -->
+    <section class="section expertise" id="expertise">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Expertise</h2>
+                <p class="section-subtitle">Skills & Technologies</p>
             </div>
-
-            <div class="project-card" data-tilt>
-                <div class="project-image">
-                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800" alt="AI Dashboard">
-                    <div class="project-overlay">
-                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-                        <a href="#" class="project-github"><i class="fab fa-github"></i></a>
-                    </div>
+            <div class="expertise-grid">
+                <div class="expertise-item">
+                    <i class="fas fa-code expertise-icon"></i>
+                    <h3>Frontend</h3>
+                    <p>React, Vue, TypeScript, Three.js</p>
                 </div>
-                <div class="project-info">
-                    <h3>AI Analytics Dashboard</h3>
-                    <p>Real-time analytics dashboard with ML-powered insights, data visualization, and predictive modeling.</p>
-                    <div class="project-tech">
-                        <span>Python</span>
-                        <span>TensorFlow</span>
-                        <span>React</span>
-                        <span>D3.js</span>
-                    </div>
+                <div class="expertise-item">
+                    <i class="fas fa-server expertise-icon"></i>
+                    <h3>Backend</h3>
+                    <p>Node.js, Python, Go, GraphQL</p>
                 </div>
-            </div>
-
-            <div class="project-card" data-tilt>
-                <div class="project-image">
-                    <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800" alt="Social Media App">
-                    <div class="project-overlay">
-                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-                        <a href="#" class="project-github"><i class="fab fa-github"></i></a>
-                    </div>
+                <div class="expertise-item">
+                    <i class="fas fa-database expertise-icon"></i>
+                    <h3>Database</h3>
+                    <p>MongoDB, PostgreSQL, Redis</p>
                 </div>
-                <div class="project-info">
-                    <h3>Social Media Platform</h3>
-                    <p>Modern social networking app with real-time messaging, content sharing, and engagement analytics.</p>
-                    <div class="project-tech">
-                        <span>Next.js</span>
-                        <span>Socket.io</span>
-                        <span>PostgreSQL</span>
-                        <span>Redis</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card" data-tilt>
-                <div class="project-image">
-                    <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=800" alt="Cloud Management">
-                    <div class="project-overlay">
-                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-                        <a href="#" class="project-github"><i class="fab fa-github"></i></a>
-                    </div>
-                </div>
-                <div class="project-info">
-                    <h3>Cloud Resource Manager</h3>
-                    <p>Multi-cloud management platform for monitoring, deploying, and optimizing cloud resources across providers.</p>
-                    <div class="project-tech">
-                        <span>Vue.js</span>
-                        <span>AWS</span>
-                        <span>Docker</span>
-                        <span>Terraform</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card" data-tilt>
-                <div class="project-image">
-                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800" alt="Cybersecurity Tool">
-                    <div class="project-overlay">
-                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-                        <a href="#" class="project-github"><i class="fab fa-github"></i></a>
-                    </div>
-                </div>
-                <div class="project-info">
-                    <h3>Security Audit Tool</h3>
-                    <p>Automated security scanning and vulnerability assessment tool for web applications and APIs.</p>
-                    <div class="project-tech">
-                        <span>Python</span>
-                        <span>FastAPI</span>
-                        <span>PostgreSQL</span>
-                        <span>Redis</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card" data-tilt>
-                <div class="project-image">
-                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800" alt="DevOps Pipeline">
-                    <div class="project-overlay">
-                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-                        <a href="#" class="project-github"><i class="fab fa-github"></i></a>
-                    </div>
-                </div>
-                <div class="project-info">
-                    <h3>CI/CD Automation Platform</h3>
-                    <p>End-to-end DevOps automation with automated testing, deployment pipelines, and monitoring.</p>
-                    <div class="project-tech">
-                        <span>Node.js</span>
-                        <span>Kubernetes</span>
-                        <span>Jenkins</span>
-                        <span>Prometheus</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Experience Section -->
-    <section id="experience" class="experience-section">
-        <h2 class="section-title">Work Experience</h2>
-        <div class="timeline">
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <div class="timeline-date">2023 - Present</div>
-                    <h3>Senior Full-Stack Developer</h3>
-                    <h4>Tech Innovators Inc.</h4>
-                    <p>Leading development of cloud-native applications, mentoring junior developers, and architecting scalable solutions.</p>
-                    <div class="timeline-tech">
-                        <span>React</span>
-                        <span>Node.js</span>
-                        <span>AWS</span>
-                        <span>Kubernetes</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <div class="timeline-date">2021 - 2023</div>
-                    <h3>Full-Stack Developer</h3>
-                    <h4>Digital Solutions Ltd.</h4>
-                    <p>Developed and maintained multiple client projects, implemented CI/CD pipelines, and improved application performance by 40%.</p>
-                    <div class="timeline-tech">
-                        <span>Vue.js</span>
-                        <span>Python</span>
-                        <span>Docker</span>
-                        <span>PostgreSQL</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <div class="timeline-date">2019 - 2021</div>
-                    <h3>Frontend Developer</h3>
-                    <h4>Creative Web Agency</h4>
-                    <p>Created responsive, interactive user interfaces for diverse clients, collaborated with designers, and ensured cross-browser compatibility.</p>
-                    <div class="timeline-tech">
-                        <span>React</span>
-                        <span>TypeScript</span>
-                        <span>SASS</span>
-                        <span>Webpack</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <div class="timeline-date">2018 - 2019</div>
-                    <h3>Junior Developer</h3>
-                    <h4>StartUp Hub</h4>
-                    <p>Built MVPs for startups, worked with REST APIs, and learned agile development methodologies.</p>
-                    <div class="timeline-tech">
-                        <span>JavaScript</span>
-                        <span>Node.js</span>
-                        <span>MongoDB</span>
-                        <span>Express</span>
-                    </div>
+                <div class="expertise-item">
+                    <i class="fas fa-cloud expertise-icon"></i>
+                    <h3>Cloud</h3>
+                    <p>AWS, Docker, Kubernetes</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact-section">
-        <h2 class="section-title">Get In Touch</h2>
-        <div class="contact-container">
-            <div class="contact-info">
-                <h3>Let's Work Together</h3>
-                <p>I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions.</p>
-                <div class="contact-details">
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>darsh@example.com</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>India (Remote Available)</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <span>+91 XXXXX XXXXX</span>
-                    </div>
-                </div>
-                <div class="social-links-large">
-                    <a href="https://github.com/todarsh002" target="_blank"><i class="fab fa-github"></i></a>
-                    <a href="https://linkedin.com/in/todarsh002" target="_blank"><i class="fab fa-linkedin"></i></a>
-                    <a href="https://twitter.com/todarsh002" target="_blank"><i class="fab fa-twitter"></i></a>
-                    <a href="https://instagram.com/todarsh002" target="_blank"><i class="fab fa-instagram"></i></a>
-                </div>
+    <section class="section contact" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Get in Touch</h2>
+                <p class="section-subtitle">Let's create something amazing</p>
             </div>
-            <form class="contact-form" id="contact-form">
-                <div class="form-group">
-                    <input type="text" id="name" name="name" placeholder="Your Name" required>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <p class="contact-lead">
+                        I'm always open to discussing new projects, creative ideas, or opportunities.
+                    </p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>darsh@example.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>India (Remote Available)</span>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://github.com/todarsh002" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://linkedin.com/in/todarsh002" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://twitter.com/todarsh002" target="_blank"><i class="fab fa-twitter"></i></a>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <input type="email" id="email" name="email" placeholder="Your Email" required>
-                </div>
-                <div class="form-group">
-                    <input type="text" id="subject" name="subject" placeholder="Subject" required>
-                </div>
-                <div class="form-group">
-                    <textarea id="message" name="message" rows="5" placeholder="Your Message" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary btn-submit">
-                    <span>Send Message</span>
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-                <div id="form-status"></div>
-            </form>
+                <form class="contact-form" id="contact-form">
+                    <div class="form-group">
+                        <input type="text" id="name" name="name" placeholder="Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" name="message" rows="4" placeholder="Message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-submit">
+                        <span>Send Message</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <div id="form-status"></div>
+                </form>
+            </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-content">
-            <p>&copy; 2026 Darsh. All rights reserved.</p>
-            <p>Built with <i class="fas fa-heart"></i> and lots of <i class="fas fa-coffee"></i></p>
+        <div class="container">
+            <p>&copy; 2026 Darsh. Crafted with precision and care.</p>
         </div>
     </footer>
 
-    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

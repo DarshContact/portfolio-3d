@@ -5,275 +5,217 @@ window.addEventListener('load', () => {
         loader.style.opacity = '0';
         setTimeout(() => {
             loader.style.display = 'none';
-        }, 500);
-    }, 2000);
+            initThreeJS();
+        }, 600);
+    }, 1500);
 });
 
-// ===== CUSTOM CURSOR =====
-const cursor = document.querySelector('.cursor');
-const follower = document.querySelector('.cursor-follower');
-
-document.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-    
-    setTimeout(() => {
-        follower.style.left = e.clientX - 10 + 'px';
-        follower.style.top = e.clientY - 10 + 'px';
-    }, 50);
-});
-
-// ===== TYPING ANIMATION =====
-const typingTexts = [
-    "Building Amazing Web Apps",
-    "Creating 3D Experiences",
-    "Solving Complex Problems",
-    "Full-Stack Development",
-    "UI/UX Enthusiast"
-];
-
-let textIndex = 0;
-let charIndex = 0;
-let isDeleting = false;
-const typingElement = document.querySelector('.typing-text');
-
-function typeText() {
-    const currentText = typingTexts[textIndex];
-    
-    if (isDeleting) {
-        typingElement.textContent = currentText.substring(0, charIndex - 1);
-        charIndex--;
+// ===== NAVIGATION SCROLL EFFECT =====
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
     } else {
-        typingElement.textContent = currentText.substring(0, charIndex + 1);
-        charIndex++;
+        navbar.classList.remove('scrolled');
     }
-    
-    let typeSpeed = isDeleting ? 50 : 100;
-    
-    if (!isDeleting && charIndex === currentText.length) {
-        typeSpeed = 2000;
-        isDeleting = true;
-    } else if (isDeleting && charIndex === 0) {
-        isDeleting = false;
-        textIndex = (textIndex + 1) % typingTexts.length;
-        typeSpeed = 500;
-    }
-    
-    setTimeout(typeText, typeSpeed);
-}
-
-typeText();
-
-// ===== PARTICLE SYSTEM =====
-const canvas = document.getElementById('particles-canvas');
-const ctx = canvas.getContext('2d');
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-const particles = [];
-const particleCount = 100;
-
-class Particle {
-    constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 3 + 1;
-        this.speedX = Math.random() * 2 - 1;
-        this.speedY = Math.random() * 2 - 1;
-        this.color = `rgba(0, 247, 255, ${Math.random() * 0.5 + 0.2})`;
-    }
-    
-    update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        
-        if (this.x > canvas.width || this.x < 0) {
-            this.speedX = -this.speedX;
-        }
-        if (this.y > canvas.height || this.y < 0) {
-            this.speedY = -this.speedY;
-        }
-    }
-    
-    draw() {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-    }
-}
-
-function initParticles() {
-    for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle());
-    }
-}
-
-function animateParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    for (let i = 0; i < particles.length; i++) {
-        particles[i].update();
-        particles[i].draw();
-        
-        // Draw connections
-        for (let j = i; j < particles.length; j++) {
-            const dx = particles[i].x - particles[j].x;
-            const dy = particles[i].y - particles[j].y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance < 150) {
-                ctx.strokeStyle = `rgba(0, 247, 255, ${0.2 - distance/750})`;
-                ctx.lineWidth = 0.5;
-                ctx.beginPath();
-                ctx.moveTo(particles[i].x, particles[i].y);
-                ctx.lineTo(particles[j].x, particles[j].y);
-                ctx.stroke();
-            }
-        }
-    }
-    
-    requestAnimationFrame(animateParticles);
-}
-
-initParticles();
-animateParticles();
-
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
 });
 
-// ===== THREE.JS 3D SCENE =====
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+// ===== MOBILE MENU =====
+const navToggle = document.getElementById('nav-toggle');
+const navMenu = document.getElementById('nav-menu');
 
-const container = document.getElementById('three-container');
-if (container) {
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    container.appendChild(renderer.domElement);
+navToggle.addEventListener('click', () => {
+    navMenu.classList.toggle('active');
+});
+
+navMenu.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+        navMenu.classList.remove('active');
+    });
+});
+
+// ===== THREE.JS PREMIUM SCENE =====
+function initThreeJS() {
+    const container = document.getElementById('canvas-container');
+    if (!container) return;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     
-    // Create icosahedron
-    const geometry = new THREE.IcosahedronGeometry(2, 1);
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    // Create torus knot
+    const geometry = new THREE.TorusKnotGeometry(1.5, 0.5, 128, 32);
     const material = new THREE.MeshPhongMaterial({ 
-        color: 0x00f7ff,
+        color: 0x6366f1,
         wireframe: true,
         transparent: true,
-        opacity: 0.7
+        opacity: 0.6,
+        shininess: 100
     });
-    const icosahedron = new THREE.Mesh(geometry, material);
-    scene.add(icosahedron);
-    
-    // Add particles
-    const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 500;
-    const posArray = new Float32Array(particlesCount * 3);
-    
-    for(let i = 0; i < particlesCount * 3; i++) {
-        posArray[i] = (Math.random() - 0.5) * 15;
-    }
-    
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-    const particlesMaterial = new THREE.PointsMaterial({
-        size: 0.02,
-        color: 0xff00ff,
+    const torusKnot = new THREE.Mesh(geometry, material);
+    scene.add(torusKnot);
+
+    // Create inner glow sphere
+    const sphereGeo = new THREE.SphereGeometry(2, 64, 64);
+    const sphereMat = new THREE.MeshBasicMaterial({ 
+        color: 0x8b5cf6,
+        wireframe: true,
         transparent: true,
-        opacity: 0.8
+        opacity: 0.15
     });
-    
-    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-    scene.add(particlesMesh);
-    
+    const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+    scene.add(sphere);
+
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
-    
-    const pointLight = new THREE.PointLight(0x00f7ff, 1);
-    pointLight.position.set(5, 5, 5);
-    scene.add(pointLight);
-    
-    camera.position.z = 6;
-    
+
+    const pointLight1 = new THREE.PointLight(0x6366f1, 1.5);
+    pointLight1.position.set(5, 5, 5);
+    scene.add(pointLight1);
+
+    const pointLight2 = new THREE.PointLight(0xf43f5e, 1);
+    pointLight2.position.set(-5, -5, 5);
+    scene.add(pointLight2);
+
+    camera.position.z = 4;
+
     // Mouse interaction
     let mouseX = 0;
     let mouseY = 0;
-    
+    let targetX = 0;
+    let targetY = 0;
+
+    const windowHalfX = window.innerWidth / 2;
+    const windowHalfY = window.innerHeight / 2;
+
     document.addEventListener('mousemove', (event) => {
-        mouseX = event.clientX / window.innerWidth - 0.5;
-        mouseY = event.clientY / window.innerHeight - 0.5;
+        mouseX = (event.clientX - windowHalfX);
+        mouseY = (event.clientY - windowHalfY);
     });
-    
-    // Animation loop
-    function animate3D() {
-        requestAnimationFrame(animate3D);
-        
-        icosahedron.rotation.x += 0.001;
-        icosahedron.rotation.y += 0.002;
-        
-        particlesMesh.rotation.x += 0.0005;
-        particlesMesh.rotation.y += 0.001;
-        
-        // Mouse interaction
-        icosahedron.rotation.x += mouseY * 0.01;
-        icosahedron.rotation.y += mouseX * 0.01;
-        
+
+    // Particles
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 200;
+    const posArray = new Float32Array(particlesCount * 3);
+
+    for(let i = 0; i < particlesCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 10;
+    }
+
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.03,
+        color: 0xfbbf24,
+        transparent: true,
+        opacity: 0.8
+    });
+    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particles);
+
+    // Animation
+    function animate() {
+        requestAnimationFrame(animate);
+
+        targetX = mouseX * 0.001;
+        targetY = mouseY * 0.001;
+
+        torusKnot.rotation.x += 0.003;
+        torusKnot.rotation.y += 0.005;
+        torusKnot.rotation.z += 0.002;
+
+        sphere.rotation.x -= 0.002;
+        sphere.rotation.y -= 0.003;
+
+        particles.rotation.y += 0.001;
+
+        // Smooth mouse follow
+        torusKnot.rotation.x += 0.05 * (targetY - torusKnot.rotation.x);
+        torusKnot.rotation.y += 0.05 * (targetX - torusKnot.rotation.y);
+
         renderer.render(scene, camera);
     }
-    
-    animate3D();
-    
+
+    animate();
+
     // Handle resize
     window.addEventListener('resize', () => {
-        if (container) {
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-        }
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
     });
 }
 
-// ===== VANILLA TILT FOR PROJECT CARDS =====
-if (typeof VanillaTilt !== 'undefined') {
-    VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
-        max: 15,
-        speed: 400,
-        glare: true,
-        "max-glare": 0.3,
-        scale: 1.05
-    });
-}
+// ===== STATS COUNTER ANIMATION =====
+const statNumbers = document.querySelectorAll('.stat-number');
+let hasAnimated = false;
 
-// ===== MOBILE NAVIGATION =====
-const burger = document.querySelector('.burger');
-const nav = document.querySelector('.nav-links');
-const navLinks = document.querySelectorAll('.nav-links li');
-
-if (burger) {
-    burger.addEventListener('click', () => {
-        nav.classList.toggle('active');
+function animateStats() {
+    if (hasAnimated) return;
+    
+    const aboutSection = document.querySelector('.about');
+    if (!aboutSection) return;
+    
+    const sectionTop = aboutSection.getBoundingClientRect().top;
+    const screenPosition = window.innerHeight / 1.3;
+    
+    if (sectionTop < screenPosition) {
+        hasAnimated = true;
         
-        navLinks.forEach((link, index) => {
-            if (link.style.animation) {
-                link.style.animation = '';
-            } else {
-                link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 0.3}s`;
-            }
+        statNumbers.forEach(stat => {
+            const target = +stat.getAttribute('data-target');
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+            
+            const updateCounter = () => {
+                if (current < target) {
+                    current += increment;
+                    stat.textContent = Math.ceil(current);
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    stat.textContent = target + '+';
+                }
+            };
+            
+            updateCounter();
         });
-        
-        burger.classList.toggle('toggle');
-    });
+    }
 }
 
-// Close menu when clicking on a link
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        nav.classList.remove('active');
-    });
+window.addEventListener('scroll', animateStats);
+
+// ===== CONTACT FORM =====
+const contactForm = document.getElementById('contact-form');
+const formStatus = document.getElementById('form-status');
+
+contactForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(contactForm);
+    const data = Object.fromEntries(formData);
+    
+    // Simulate CSV save
+    const csvContent = `${data.name},${data.email},${data.message},${new Date().toISOString()}\n`;
+    
+    formStatus.style.color = '#6366f1';
+    formStatus.textContent = 'Message sent! I\'ll get back to you soon.';
+    
+    contactForm.reset();
+    
+    console.log('Contact Form:', data);
+    console.log('CSV:', csvContent);
+    
+    setTimeout(() => {
+        formStatus.textContent = '';
+    }, 5000);
 });
 
-// ===== SMOOTH SCROLLING =====
+// ===== SMOOTH SCROLL =====
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
@@ -287,98 +229,13 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// ===== NUMBER COUNTER ANIMATION =====
-const statNumbers = document.querySelectorAll('.stat-number');
-
-const animateCounter = (element) => {
-    const target = parseInt(element.getAttribute('data-target'));
-    const duration = 2000;
-    const increment = target / (duration / 16);
-    let current = 0;
-    
-    const updateCounter = () => {
-        current += increment;
-        if (current < target) {
-            element.textContent = Math.floor(current);
-            requestAnimationFrame(updateCounter);
-        } else {
-            element.textContent = target + '+';
-        }
-    };
-    
-    updateCounter();
-};
-
-// Trigger counter when in view
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            animateCounter(entry.target);
-        }
-    });
-});
-
-statNumbers.forEach(stat => {
-    observer.observe(stat);
-});
-
-// ===== CONTACT FORM HANDLER =====
-const contactForm = document.getElementById('contact-form');
-const formStatus = document.getElementById('form-status');
-
-if (contactForm) {
-    contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const formData = new FormData(contactForm);
-        const data = Object.fromEntries(formData);
-        
-        // Save to CSV
-        try {
-            // Create CSV content
-            const csvRow = [
-                new Date().toISOString(),
-                data.name,
-                data.email,
-                data.subject,
-                data.message.replace(/,/g, ';') // Replace commas to avoid CSV issues
-            ];
-            
-            const csvContent = csvRow.join(',') + '\n';
-            
-            // Download CSV
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `contact-${Date.now()}.csv`;
-            a.click();
-            window.URL.revokeObjectURL(url);
-            
-            formStatus.textContent = '✓ Message saved! Check your downloads.';
-            formStatus.style.color = '#00f7ff';
-            
-            // Reset form
-            contactForm.reset();
-            
-            // Also log to console (for debugging)
-            console.log('Contact Form Submission:', data);
-            
-        } catch (error) {
-            formStatus.textContent = '✗ Error saving message. Please try again.';
-            formStatus.style.color = '#ff0055';
-            console.error('Error:', error);
-        }
-    });
-}
-
-// ===== SCROLL ANIMATIONS =====
+// ===== INTERSECTION OBSERVER FOR ANIMATIONS =====
 const observerOptions = {
     threshold: 0.1,
     rootMargin: '0px 0px -100px 0px'
 };
 
-const scrollObserver = new IntersectionObserver((entries) => {
+const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.style.opacity = '1';
@@ -387,33 +244,12 @@ const scrollObserver = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
-// Observe sections
-document.querySelectorAll('section').forEach(section => {
-    section.style.opacity = '0';
-    section.style.transform = 'translateY(50px)';
-    section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    scrollObserver.observe(section);
+document.querySelectorAll('.work-card, .expertise-item, .about-content').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = 'all 0.6s ease-out';
+    observer.observe(el);
 });
 
-// ===== PARALLAX EFFECT =====
-window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const parallaxElements = document.querySelectorAll('.hero-3d');
-    
-    parallaxElements.forEach(element => {
-        element.style.transform = `translateY(${scrolled * 0.5}px)`;
-    });
-});
-
-// ===== GLITCH EFFECT FOR NAME =====
-const glitchElement = document.querySelector('.glitch');
-if (glitchElement) {
-    setInterval(() => {
-        glitchElement.classList.add('glitch-active');
-        setTimeout(() => {
-            glitchElement.classList.remove('glitch-active');
-        }, 200);
-    }, 3000);
-}
-
-console.log('Portfolio loaded successfully! 🚀');
+console.log('Portfolio loaded! 🚀');
+console.log('Premium design by Darsh');
