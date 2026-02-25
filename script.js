@@ -1,35 +1,19 @@
-// ===== LOADING & INIT =====
-let currentTheme = 'dark';
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Load saved theme
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    setTheme(savedTheme);
-    
-    // Initialize Three.js
-    initThreeJS();
-    
-    // Initialize animations
-    initAnimations();
-    
-    console.log('🚀 Portfolio loaded!');
-});
-
 // ===== THEME TOGGLE =====
 const themeToggle = document.getElementById('theme-toggle');
+const html = document.documentElement;
+
 themeToggle.addEventListener('click', () => {
-    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    setTheme(currentTheme);
-    localStorage.setItem('theme', currentTheme);
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', newTheme);
+    themeToggle.innerHTML = newTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+    localStorage.setItem('theme', newTheme);
 });
 
-function setTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    themeToggle.innerHTML = theme === 'dark' 
-        ? '<i class="fas fa-moon"></i>' 
-        : '<i class="fas fa-sun"></i>';
-    currentTheme = theme;
-}
+// Load saved theme
+const savedTheme = localStorage.getItem('theme') || 'dark';
+html.setAttribute('data-theme', savedTheme);
+themeToggle.innerHTML = savedTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
 
 // ===== CUSTOM CURSOR =====
 const cursor = document.querySelector('.cursor');
@@ -38,14 +22,13 @@ const cursorFollower = document.querySelector('.cursor-follower');
 document.addEventListener('mousemove', (e) => {
     cursor.style.left = e.clientX + 'px';
     cursor.style.top = e.clientY + 'px';
-    
     setTimeout(() => {
         cursorFollower.style.left = e.clientX + 'px';
         cursorFollower.style.top = e.clientY + 'px';
     }, 100);
 });
 
-// ===== NAVIGATION SCROLL EFFECT =====
+// ===== NAVIGATION SCROLL =====
 const navbar = document.getElementById('navbar');
 window.addEventListener('scroll', () => {
     if (window.scrollY > 50) {
@@ -63,6 +46,12 @@ navToggle.addEventListener('click', () => {
     navMenu.classList.toggle('active');
 });
 
+navMenu.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+        navMenu.classList.remove('active');
+    });
+});
+
 // ===== THREE.JS 3D SCENE =====
 function initThreeJS() {
     const container = document.getElementById('canvas-container');
@@ -76,8 +65,8 @@ function initThreeJS() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    // Create icosahedron
-    const geometry = new THREE.IcosahedronGeometry(2, 1);
+    // Torus Knot
+    const geometry = new THREE.TorusKnotGeometry(1.5, 0.5, 128, 32);
     const material = new THREE.MeshPhongMaterial({ 
         color: 0x6366f1,
         wireframe: true,
@@ -85,29 +74,21 @@ function initThreeJS() {
         opacity: 0.6,
         shininess: 100
     });
-    const icosahedron = new THREE.Mesh(geometry, material);
-    scene.add(icosahedron);
+    const torusKnot = new THREE.Mesh(geometry, material);
+    scene.add(torusKnot);
 
-    // Create particle sphere
-    const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 300;
-    const posArray = new Float32Array(particlesCount * 3);
-
-    for(let i = 0; i < particlesCount * 3; i++) {
-        posArray[i] = (Math.random() - 0.5) * 8;
-    }
-
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-    const particlesMaterial = new THREE.PointsMaterial({
-        size: 0.04,
-        color: 0xfbbf24,
+    // Sphere
+    const sphereGeo = new THREE.SphereGeometry(2, 64, 64);
+    const sphereMat = new THREE.MeshBasicMaterial({ 
+        color: 0x8b5cf6,
+        wireframe: true,
         transparent: true,
-        opacity: 0.8
+        opacity: 0.15
     });
-    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-    scene.add(particles);
+    const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+    scene.add(sphere);
 
-    // Lighting
+    // Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
@@ -119,38 +100,52 @@ function initThreeJS() {
     pointLight2.position.set(-5, -5, 5);
     scene.add(pointLight2);
 
-    camera.position.z = 5;
+    camera.position.z = 4;
 
-    // Mouse interaction
-    let mouseX = 0;
-    let mouseY = 0;
+    // Particles
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 200;
+    const posArray = new Float32Array(particlesCount * 3);
 
-    document.addEventListener('mousemove', (event) => {
-        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+    for(let i = 0; i < particlesCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 10;
+    }
+
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.03,
+        color: 0xfbbf24,
+        transparent: true,
+        opacity: 0.8
+    });
+    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particles);
+
+    let mouseX = 0, mouseY = 0;
+    document.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX - window.innerWidth / 2) * 0.001;
+        mouseY = (e.clientY - window.innerHeight / 2) * 0.001;
     });
 
-    // Animation
     function animate() {
         requestAnimationFrame(animate);
 
-        icosahedron.rotation.x += 0.003;
-        icosahedron.rotation.y += 0.005;
-        icosahedron.rotation.z += 0.002;
+        torusKnot.rotation.x += 0.003;
+        torusKnot.rotation.y += 0.005;
+        torusKnot.rotation.z += 0.002;
 
+        sphere.rotation.x -= 0.002;
+        sphere.rotation.y -= 0.003;
         particles.rotation.y += 0.001;
-        particles.rotation.x += 0.0005;
 
-        // Mouse interaction
-        icosahedron.rotation.x += mouseY * 0.01;
-        icosahedron.rotation.y += mouseX * 0.01;
+        torusKnot.rotation.x += 0.05 * (mouseY - torusKnot.rotation.x);
+        torusKnot.rotation.y += 0.05 * (mouseX - torusKnot.rotation.y);
 
         renderer.render(scene, camera);
     }
 
     animate();
 
-    // Handle resize
     window.addEventListener('resize', () => {
         renderer.setSize(container.clientWidth, container.clientHeight);
         camera.aspect = container.clientWidth / container.clientHeight;
@@ -158,21 +153,22 @@ function initThreeJS() {
     });
 }
 
-// ===== SMOOTH SCROLL =====
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    });
+// Initialize Three.js after DOM loads
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initThreeJS);
+} else {
+    initThreeJS();
+}
+
+// ===== VANILLA TILT =====
+VanillaTilt.init(document.querySelectorAll('[data-tilt]'), {
+    max: 15,
+    speed: 400,
+    glare: true,
+    'max-glare': 0.2
 });
 
-// ===== STATS COUNTER ANIMATION =====
+// ===== STATS COUNTER =====
 const statNumbers = document.querySelectorAll('.stat-number');
 let hasAnimated = false;
 
@@ -221,64 +217,29 @@ contactForm.addEventListener('submit', async (e) => {
     const formData = new FormData(contactForm);
     const data = Object.fromEntries(formData);
     
-    // Simulate CSV save
-    const csvContent = `${data.name},${data.email},${data.message},${new Date().toISOString()}\n`;
-    
     formStatus.style.color = '#6366f1';
     formStatus.textContent = 'Message sent! I\'ll get back to you soon.';
     
     contactForm.reset();
-    
-    console.log('Contact Form:', data);
-    console.log('CSV:', csvContent);
     
     setTimeout(() => {
         formStatus.textContent = '';
     }, 5000);
 });
 
-// ===== VANILLA TILT FOR CARDS =====
-VanillaTilt.init(document.querySelectorAll('[data-tilt]'), {
-    max: 15,
-    speed: 400,
-    glare: true,
-    'max-glare': 0.2
-});
-
-// ===== INTERSECTION OBSERVER FOR ANIMATIONS =====
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
+// ===== SMOOTH SCROLL =====
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
         }
     });
-}, observerOptions);
-
-document.querySelectorAll('.work-card, .skill-category, .timeline-item').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = 'all 0.6s ease-out';
-    observer.observe(el);
 });
 
-// ===== GLITCH EFFECT =====
-const glitchElement = document.querySelector('.glitch');
-if (glitchElement) {
-    setInterval(() => {
-        glitchElement.style.transform = `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
-        setTimeout(() => {
-            glitchElement.style.transform = 'translate(0, 0)';
-        }, 100);
-    }, 3000);
-}
-
-function initAnimations() {
-    // Any additional initialization
-    console.log('Animations initialized');
-}
+console.log('Portfolio loaded! 🚀');
+console.log('Built with ❤️ by Darsh');
